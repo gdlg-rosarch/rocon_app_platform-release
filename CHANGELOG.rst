@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.7.4 (2014-12-30)
+------------------
+* ignore unncessay remapping rule `#265 <https://github.com/robotics-in-concert/rocon_app_platform/issues/265>`_
+* Contributors: Jihoon Lee
+
 0.7.3 (2014-11-21)
 ------------------
 * Merge pull request `#263 <https://github.com/robotics-in-concert/rocon_app_platform/issues/263>`_ from robotics-in-concert/sim_param
