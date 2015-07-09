@@ -1,0 +1,12 @@
+Source: ros-indigo-rocon-apps
+Section: misc
+Priority: extra
+Maintainer: Daniel Stonier <d.stonier@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin
+Homepage: http://wiki.ros.org/rocon_apps
+Standards-Version: 3.9.2
+
+Package: ros-indigo-rocon-apps
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-gateway-msgs, ros-indigo-rocon-app-manager-msgs, ros-indigo-roslib, ros-indigo-rospy, ros-indigo-rospy-tutorials, ros-indigo-topic-tools
+Description: Core rocon apps for use with the appmanager and rocon concert.
