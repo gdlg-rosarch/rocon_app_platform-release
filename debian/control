@@ -1,0 +1,12 @@
+Source: ros-kinetic-rocon-app-platform
+Section: misc
+Priority: extra
+Maintainer: Daniel Stonier <d.stonier@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-kinetic-catkin
+Homepage: http://www.ros.org/wiki/rocon_app_platform
+Standards-Version: 3.9.2
+
+Package: ros-kinetic-rocon-app-platform
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-kinetic-rocon-app-manager, ros-kinetic-rocon-app-utilities, ros-kinetic-rocon-apps
+Description: Robot application platform for ros robots with a default implementation in python.
