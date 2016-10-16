@@ -1,5 +1,0 @@
-display: Parent Talker
-description: Default Talker
-compatibility: rocon:/*
-launch: parent.launch
-parent_name: cyclic/child

@@ -1,3 +1,0 @@
-compatibility: rocon:/*
-launch: invalid_child.launch
-parent_name: invalid/invalid_child

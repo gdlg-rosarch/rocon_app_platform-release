@@ -1,3 +1,0 @@
-compatibility: rocon:/*
-launch: child.launch
-parent_name: from_child/parent.rapp
