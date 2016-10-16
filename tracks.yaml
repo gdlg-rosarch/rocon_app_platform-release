@@ -55,7 +55,7 @@ tracks:
     last_version: 0.7.13
     name: rocon_app_platform
     patches: null
-    release_inc: '0'
+    release_inc: '1'
     release_repo_url: https://github.com/yujinrobot-release/rocon_app_platform-release.git
     release_tag: :{version}
     ros_distro: indigo
