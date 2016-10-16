@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 #
 # License: BSD
-#   https://raw.github.com/robotics-in-concert/rocon_app_platform/license/LICENSE
+#   https://raw.github.com/robotics-in-py/rocon_app_platform/license/LICENSE
 #
 #################################################################################
 
 from .exceptions import *
+
 
 def classify_rapp_type(data):
     '''

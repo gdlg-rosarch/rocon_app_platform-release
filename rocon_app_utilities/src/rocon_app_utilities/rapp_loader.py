@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # License: BSD
-#   https://raw.github.com/robotics-in-concert/rocon_app_platform/license/LICENSE
+#   https://raw.github.com/robotics-in-py/rocon_app_platform/license/LICENSE
 #
 #################################################################################
 from .exceptions import InvalidRappException, RappResourceNotExistException, RappMalformedException, XmlParseException
@@ -13,6 +13,7 @@ from xml.dom.minidom import parse
 from xml.dom import Node as DomNode
 import rocon_python_utils
 from rocon_console import console
+
 
 def load_rapp_yaml_from_file(filename):
     '''
@@ -104,7 +105,9 @@ def _find_resource(base_path, resource):
         try:
             found = rocon_python_utils.ros.find_resource_from_string(resource)
         except rospkg.ResourceNotFound:
-            raise RappResourceNotExistException("invalid rapp - %s does not exist" % (resource))
+            raise RappResourceNotExistException("does not exist [%s]" % (resource))
+        except ValueError:  # thrown when path not found above, but it is not a resource name (e.g. ../../icons/gopher.png will generate ValueError here)
+            raise RappResourceNotExistException("neither found, nor a valid resource [%s]" % (resource))
         raise RappResourceNotExistException("invalid rapp - %s is 'tuple based rapp resource'. It is deprecated attribute. Please fix it as relative path to .rapp file" % (resource))
 
 
@@ -180,7 +183,7 @@ def _load_public_parameters(base_path, public_parameters_resource):
     with open(public_parameters_file_path, 'r') as f:
         y = yaml.load(f.read())
         y = y or {}
-        
+
     return public_parameters_file_path, y
 
 
@@ -198,7 +201,7 @@ def _get_standard_args(roslaunch_file):
 
       :raises RappMalformedException: if launch file format is invalid
     '''
-    standard_args = ['gateway_name', 'application_namespace', 'rocon_uri', 'capability_server_nodelet_manager_name', 'simulation']
+    standard_args = ['application_namespace', 'rocon_uri', 'capability_server_nodelet_manager_name', 'simulation']
 
     try:
         available_args = _get_available_args(roslaunch_file)

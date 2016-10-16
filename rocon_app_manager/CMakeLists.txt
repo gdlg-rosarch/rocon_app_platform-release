@@ -10,6 +10,9 @@ project(rocon_app_manager)
 ##############################################################################
 
 find_package(catkin REQUIRED COMPONENTS roslint)
+if (CATKIN_ENABLE_TESTING)
+  find_package(catkin REQUIRED COMPONENTS rostest)
+endif()
 catkin_package()
 
 catkin_python_setup()
@@ -20,7 +23,8 @@ catkin_python_setup()
 
 install(
     PROGRAMS 
-        scripts/rapp_manager.py
+        scripts/concert_client.py
+        scripts/standalone.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
     )
 
@@ -32,3 +36,12 @@ install(DIRECTORY param
 
 install(DIRECTORY icons
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+  
+##############################################################################
+# Unit Tests
+##############################################################################
+
+if (CATKIN_ENABLE_TESTING)
+  add_subdirectory(tests)
+endif()
