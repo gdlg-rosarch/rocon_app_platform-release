@@ -6,19 +6,11 @@
 Rocon App Manager
 =================
 
-Application management inside a robot.
-
 Contents:
 
 .. toctree::
    :maxdepth: 2
    
-   modules
-   changelog
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   rapp_manager_api
+   rapp_api
+   ../CHANGELOG

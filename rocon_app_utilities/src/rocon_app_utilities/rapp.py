@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # License: BSD
-#   https://raw.github.com/robotics-in-py/rocon_app_platform/license/LICENSE
+#   https://raw.github.com/robotics-in-concert/rocon_app_platform/license/LICENSE
 #
 #################################################################################
 
@@ -87,7 +87,7 @@ class Rapp(object):
             self.filename = filename
             self.classify()
         except RappResourceNotExistException as e:
-            raise InvalidRappException(str(e))
+            raise InvalidRappException(str(self.resource_name) + ' : ' + str(e))
 
     def load_rapp_specs_from_file(self):
         '''
