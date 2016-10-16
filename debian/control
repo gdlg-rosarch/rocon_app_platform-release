@@ -1,0 +1,12 @@
+Source: ros-indigo-rocon-app-utilities
+Section: misc
+Priority: extra
+Maintainer: Jihoon Lee <jihoonlee.in@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), python-catkin-pkg, ros-indigo-catkin, ros-indigo-roslint
+Homepage: http://wiki.ros.org/rocon_app_utilities
+Standards-Version: 3.9.2
+
+Package: ros-indigo-rocon-app-utilities
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-rospkg, ros-indigo-rocon-console, ros-indigo-rocon-python-utils, ros-indigo-rocon-uri, ros-indigo-roslaunch
+Description: The rocon_app_utilities package
