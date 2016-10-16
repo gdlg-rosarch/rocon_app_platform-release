@@ -20,7 +20,6 @@ def default_launch_arg_mappings():
     launch_arg_mappings.application_namespace = "/applications"
     launch_arg_mappings.robot_name = "dude"
     launch_arg_mappings.rocon_uri = "rocon:/"
-    launch_arg_mappings.simulation = False
     launch_arg_mappings.capability_nodelet_manager_name = None
     return launch_arg_mappings
 
@@ -39,11 +38,11 @@ def test_prepare_launch_text_launchfile():
     print launchtext
     assert launchtext.strip() == """
 <launch>
-  <include file="path_to_launcher">
+  <include file="path_to_launcher" ns="/">
   </include>
 </launch>
 """.strip()
- 
+
 def test_prepare_launch_text_launchfile_appnamespace():
     print("")
     print(console.bold + "\n****************************************************************************************" + console.reset)
@@ -54,12 +53,12 @@ def test_prepare_launch_text_launchfile_appnamespace():
     print "'" + launchtext + "'"
     assert launchtext.strip() == """
 <launch>
-  <include file="path_to_launcher">
+  <include file="path_to_launcher" ns="/">
     <arg name="application_namespace" value="/applications"/>
   </include>
 </launch>
 """.strip()
-  
+
 def test_prepare_launch_text_launchfile_public_parameters():
     print("")
     print(console.bold + "\n****************************************************************************************" + console.reset)
@@ -70,12 +69,12 @@ def test_prepare_launch_text_launchfile_public_parameters():
     print "'" + launchtext + "'"
     assert launchtext.strip() == """
 <launch>
-  <include file="path_to_launcher">
+  <include file="path_to_launcher" ns="/">
     <arg name="public_param" value="pubparam_value"/>
   </include>
 </launch>
 """.strip()
-  
+
 def test_prepare_launch_text_launchfile_rocon_uri():
     print("")
     print(console.bold + "\n****************************************************************************************" + console.reset)
@@ -86,25 +85,9 @@ def test_prepare_launch_text_launchfile_rocon_uri():
     print "'" + launchtext + "'"
     assert launchtext.strip() == """
 <launch>
-  <include file="path_to_launcher">
+  <include file="path_to_launcher" ns="/">
     <arg name="rocon_uri" value="rocon:/"/>
   </include>
 </launch>
 """.strip()
-  
-def test_prepare_launch_text_launchfile_simulation():
-    print("")
-    print(console.bold + "\n****************************************************************************************" + console.reset)
-    print(console.bold + "* Simulation" + console.reset)
-    print(console.bold + "****************************************************************************************" + console.reset)
-    print("")
-    launchtext = utils._prepare_launch_text("path_to_launcher", ['simulation'], {}, default_launch_arg_mappings())
-    print "'" + launchtext + "'"
-    assert launchtext.strip() == """
-<launch>
-  <include file="path_to_launcher">
-    <arg name="simulation" value="False"/>
-  </include>
-</launch>
-""".strip()
-  
+
