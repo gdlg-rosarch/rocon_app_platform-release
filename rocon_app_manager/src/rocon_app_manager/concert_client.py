@@ -25,6 +25,7 @@ rocon indigo.
 
 import gateway_msgs.msg as gateway_msgs
 import gateway_msgs.srv as gateway_srvs
+import rocon_gateway
 import rocon_gateway_utils
 import rocon_python_comms
 import rocon_std_msgs.msg as rocon_std_msgs
@@ -47,14 +48,15 @@ class ConcertClient(Standalone):
 
     **Features**
 
-    * **application namespace** - communicates with a gateway to set a unique landing space for topics in /concert/clients/_name_
+    * **concert namespace** - shares all connections landing in /concert/* (rapp launchers can get a unique ns for remaps via /concert/clients/$(arg robot_name)).
+    * **application namespace** - shares all connections landing in this namespace (rapp launchers can do remaps via application_namespace arg).
 
     **Publishers**
 
     * **~concert_parameters** (*std_msgs.String*) - displays the parameters used for this instantiation [latched]
-    * **/concert/clients/_name_/platform_info** (*rocon_std_msgs.MasterInfo*) - a master info relay to the concert
 
     .. todo:: if we want low latency flipping, call the gateway watcher set period service with low period after starting a rapp
+    .. todo:: flip rules for rapp public interfaces, though these may not be necessary anymore
     '''
 
     ##########################################################################
@@ -80,21 +82,12 @@ class ConcertClient(Standalone):
         self.concert_publishers = rocon_python_comms.utils.Publishers(
             [
                 ('~introspection/concert_parameters', std_msgs.String, latched, queue_size_five),
-                ('/concert/clients/' + self.parameters.robot_name + '/platform_info', rocon_std_msgs.MasterInfo, latched, queue_size_five),
-            ]
-        )
-        self.concert_subscribers = rocon_python_comms.utils.Subscribers(
-            [
-                ('~master_info', rocon_std_msgs.MasterInfo, self._relay_master_info)
             ]
         )
 
         # let the publishers come up
         rospy.rostime.wallsleep(0.5)
         self.concert_publishers.concert_parameters.publish(std_msgs.String("%s" % self.concert_parameters))
-
-    def _relay_master_info(self, msg):
-        self.concert_publishers.platform_info.publish(msg)
 
     def _match_robot_name_to_gateway_name(self):
         gateway_info_service = rocon_python_comms.SubscriberProxy('~gateway_info', gateway_msgs.GatewayInfo)
@@ -111,7 +104,7 @@ class ConcertClient(Standalone):
                 rate.sleep()
                 warning_throttle_counter += 1
                 if warning_throttle_counter % 10 == 0:
-                    rospy.logerr("Rapp Manager : unable to find the local gateway.")
+                    rospy.logwarn("Rapp Manager : unable to find the local gateway, will keep trying")
             except rospy.exceptions.ROSInterruptException:
                 rospy.loginfo("Rapp Manager : breaking out of gateway search loop [most likely just ros shutting down]")
                 raise GatewayNotFoundException()
@@ -125,14 +118,16 @@ class ConcertClient(Standalone):
         req.cancel = cancel_flag
         flip_request_service = rospy.ServiceProxy('~flip', gateway_srvs.Remote)
 
-        concert_namespace_rule = rocon_gateway_utils.create_gateway_rule(name="/concert/.*", connection_type=gateway_msgs.ConnectionType.PUBLISHER)
-        applications_namespace_rule = rocon_gateway_utils.create_gateway_rule(name=self.parameters.application_namespace + "/.*", connection_type=gateway_msgs.ConnectionType.PUBLISHER)
-        for concert_remote_gateway in self.concert_parameters.concert_whitelist:
-            req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(concert_remote_gateway, concert_namespace_rule))
-            req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(concert_remote_gateway, applications_namespace_rule))
-        if not self.concert_parameters.concert_whitelist:
-            req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(".*", concert_namespace_rule))
-            req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(".*", applications_namespace_rule))
+        for connection_type in rocon_gateway.connection_types:
+            concert_namespace_rule = rocon_gateway_utils.create_gateway_rule(name="/concert/.*", connection_type=connection_type)
+            # self.parameters.application namespace always finishes with a trailing slash because of 'rosgraph.names.make_global_ns()' called on it.
+            applications_namespace_rule = rocon_gateway_utils.create_gateway_rule(name=self.parameters.application_namespace + ".*", connection_type=connection_type)
+            for concert_remote_gateway in self.concert_parameters.concert_whitelist:
+                req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(concert_remote_gateway, concert_namespace_rule))
+                req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(concert_remote_gateway, applications_namespace_rule))
+            if not self.concert_parameters.concert_whitelist:
+                req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(".*", concert_namespace_rule))
+                req.remotes.append(rocon_gateway_utils.create_gateway_remote_rule(".*", applications_namespace_rule))
 
         warning_throttle_counter = 0
         rate = rospy.Rate(10)  # 10hz

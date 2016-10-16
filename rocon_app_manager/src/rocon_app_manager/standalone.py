@@ -105,6 +105,11 @@ class Standalone(object):
         self.parameters = StandaloneParameters()
         self.rocon_uri = rocon_uri.generate_platform_rocon_uri(self.parameters.robot_type, self.parameters.robot_name)
         rospy.loginfo("Rapp Manager : rocon_uri: %s" % self.rocon_uri)
+        # attempt to parse it, try and make it official
+        try:
+            rocon_uri.RoconURI(self.rocon_uri)
+        except rocon_uri.exceptions.RoconURIValueError as e:
+            rospy.logerr("Rapp Manager : rocon_uri is not official, rapp compatibility will probably fail [%s]" % str(e))
         self.caps_list = {}
 
         rospy.loginfo("Rapp Manager : indexing rapps...")
@@ -431,7 +436,6 @@ class Standalone(object):
         launch_arg_mappings.application_namespace = self.parameters.application_namespace
         launch_arg_mappings.robot_name = self.parameters.robot_name
         launch_arg_mappings.rocon_uri = self.rocon_uri
-        launch_arg_mappings.simulation = self.parameters.simulation
         launch_arg_mappings.capability_nodelet_manager_name = caps_list.nodelet_manager_name if self.caps_list else None
 
         resp.started, resp.message, unused_connections = rapp.start(launch_arg_mappings,
