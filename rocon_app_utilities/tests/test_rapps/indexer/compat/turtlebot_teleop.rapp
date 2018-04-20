@@ -1,3 +1,0 @@
-compatibility: rocon:/turtlebot
-launch: turtlebot_teleop.launch
-parent_name: compat/teleop

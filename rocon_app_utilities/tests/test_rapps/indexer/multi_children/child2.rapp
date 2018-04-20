@@ -1,4 +1,0 @@
-display: Child2
-compatibility: rocon:/*
-launch: child2.launch
-parent_name: multi_children/parent
