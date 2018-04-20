@@ -1,3 +1,0 @@
-display:          Text To Speech
-description:      Speaks given string
-public_interface: text_to_speech.interface
